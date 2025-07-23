@@ -1,0 +1,94 @@
+<?php
+require 'dados.php';
+
+$codigo = $_GET['codigo'] ?? '';
+$download = isset($_GET['download']);
+
+if (empty($codigo) {
+    die('Código do certificado não informado');
+}
+
+if (!isset($certificados[$codigo])) {
+    die('Certificado não encontrado');
+}
+
+$certificado = $certificados[$codigo];
+
+if ($download) {
+    header('Content-Type: application/pdf');
+    header('Content-Disposition: attachment; filename="Certificado_' . $codigo . '.pdf"');
+    // Em um sistema real, aqui você geraria o PDF
+    // Estamos apenas simulando para este exemplo
+    exit;
+}
+?>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificado - <?= $certificado['nome_aluno'] ?></title>
+    <link rel="stylesheet" href="estilo.css">
+    <style>
+        @media print {
+            .no-print {
+                display: none;
+            }
+            body {
+                padding: 0;
+                margin: 0;
+            }
+            .certificado {
+                border: none;
+                padding: 0;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="certificado">
+        <div class="certificado-header">
+            <h1>SAMA Cuidados</h1>
+            <h1>CERTIFICADO</h1>
+        </div>
+        
+        <div class="certificado-content">
+            <p>A <strong><?= $certificado['nome_instituicao'] ?></strong>, Instituição de Assessoria e Encaminhamento Profissional, mantida por<br>
+            <?= $certificado['nome_responsavel'] ?> MEI, inscrita sob o CNPJ n. <?= $certificado['cnpj_instituicao'] ?>, no uso de<br>
+            suas atribuições, tendo em vista a conclusão do</p>
+            
+            <p><strong><?= $certificado['curso'] ?></strong>, em <?= $certificado['data_conclusao'] ?>,<br>
+            confere o título de <strong><?= $certificado['titulo_conferido'] ?></strong> a <strong><?= $certificado['nome_aluno'] ?></strong>, natural<br>
+            de <?= $certificado['naturalidade_cidade'] ?> - <?= $certificado['naturalidade_estado'] ?>, nascido em <?= $certificado['data_nascimento'] ?>, inscrito sob o CPF n. <?= $certificado['cpf'] ?><br>
+            e lhe outorga o presente CERTIFICADO afim de que possa comprovar sua experiência acadêmica<br>
+            e profissional com carga horária de <?= $certificado['carga_horaria'] ?>hrs.</p>
+            
+            <p>Esse diploma está amparado pelo decreto presidencial Nº 5.154 que regulamenta a Lei Nº 9.394.</p>
+            
+            <p>Vila Velha-ES<br>
+            <?= $certificado['data_emissao'] ?></p>
+        </div>
+        
+        <div class="assinatura">
+            <p>___________________________</p>
+            <p><strong><?= $certificado['nome_responsavel'] ?></strong><br>
+            <?= $certificado['cargo_responsavel'] ?> - <?= $certificado['nome_instituicao'] ?></p>
+        </div>
+        
+        <div class="codigo-certificado">
+            <p>Concluinte<br>
+            <?= $codigo ?></p>
+        </div>
+        
+        <div class="footer">
+            Certificado válido em todo território nacional conforme Lei nº 9.394/96 e Decreto nº 5.154/04
+        </div>
+    </div>
+    
+    <div class="container no-print" style="text-align: center; margin-top: 20px;">
+        <button onclick="window.print()">Imprimir Certificado</button>
+        <a href="index.php" class="btn">Voltar</a>
+    </div>
+</body>
+</html>
